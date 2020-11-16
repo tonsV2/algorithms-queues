@@ -1,4 +1,5 @@
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Deque<Item> implements Iterable<Item> {
     private Node head;
@@ -31,6 +32,10 @@ public class Deque<Item> implements Iterable<Item> {
 
     // add the item to the front
     public void addFirst(Item item) {
+        if (item == null) {
+            throw new IllegalArgumentException();
+        }
+
         size += 1;
         Node node = new Node(item);
 
@@ -50,6 +55,10 @@ public class Deque<Item> implements Iterable<Item> {
 
     // add the item to the back
     public void addLast(Item item) {
+        if (item == null) {
+            throw new IllegalArgumentException();
+        }
+
         size += 1;
         Node node = new Node(item);
 
@@ -69,19 +78,31 @@ public class Deque<Item> implements Iterable<Item> {
 
     // remove and return the item from the front
     public Item removeFirst() {
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+
         size -= 1;
         Node node = head;
-        head = head.next;
-        head.prev = null;
+        if (head.next != null) {
+            head = head.next;
+            head.prev = null;
+        }
         return node.data;
     }
 
     // remove and return the item from the back
     public Item removeLast() {
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+
         size -= 1;
         Node node = tail;
-        tail = node.prev;
-        tail.next = null;
+        if (tail.prev != null) {
+            tail = tail.prev;
+            tail.next = null;
+        }
         return node.data;
     }
 
@@ -98,9 +119,17 @@ public class Deque<Item> implements Iterable<Item> {
 
             @Override
             public Item next() {
+                if (current == null) {
+                    throw new NoSuchElementException();
+                }
                 Item data = current.data;
                 current = current.next;
                 return data;
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException();
             }
         };
     }
